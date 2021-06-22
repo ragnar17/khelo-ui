@@ -10,7 +10,7 @@ import Signup from './components/Signup.js';
 import Bookings from './components/Bookings.js';
 import Home from './components/Home.js';
 import Profile from './components/Profile.js';
-
+import { AuthContext } from './context.js';
 
 const { StatusBarManager } = NativeModules;
 
@@ -37,21 +37,39 @@ const ProfileStackScreen = () => (
   </ProfileStack.Navigator>
 )
 export default function App() {
-  
+  const [usertoken,setUserToken] = React.useState("aa");
+
+  const authContext = React.useMemo(() =>{
+    return {
+      signIn: (newUserToken)=>{
+        setUserToken(newUserToken)
+      },
+      signUp: ()=>{},
+      signOut: ()=>{
+        setUserToken(null)
+      }
+    }
+  },[])
   return (
-    <SafeAreaView style={[styles.container]}>
-      <NavigationContainer>
-        {/* <Tabs.Navigator>
-          <Tabs.Screen name="Home" component={HomeStackScreen}/>
-          <Tabs.Screen name="Bookings" component={BookingsStackScreen}/>
-          <Tabs.Screen name="Profile" component={ProfileStackScreen}/>
-        </Tabs.Navigator> */}
-        <AuthStack.Navigator>
-          <AuthStack.Screen name="Login" component={Login} options={{ headerShown: false }}></AuthStack.Screen>
-          <AuthStack.Screen name="Signup" component={Signup} options={{ headerShown: false }}></AuthStack.Screen>
-        </AuthStack.Navigator>
-      </NavigationContainer>
-    </SafeAreaView>
+    <AuthContext.Provider value={authContext}>
+      <SafeAreaView style={[styles.container]}>
+        <NavigationContainer>
+          {usertoken ? (
+            <Tabs.Navigator>
+              <Tabs.Screen name="Home" component={HomeStackScreen}/>
+              <Tabs.Screen name="Bookings" component={BookingsStackScreen}/>
+              <Tabs.Screen name="Profile" component={ProfileStackScreen}/>
+            </Tabs.Navigator>
+            
+          ):(
+            <AuthStack.Navigator>
+              <AuthStack.Screen name="Login" component={Login} options={{ headerShown: false }}></AuthStack.Screen>
+              <AuthStack.Screen name="Signup" component={Signup} options={{ headerShown: false }}></AuthStack.Screen>
+            </AuthStack.Navigator>   
+          )}
+        </NavigationContainer>
+      </SafeAreaView>
+    </AuthContext.Provider>
   );
 }
 

@@ -2,6 +2,7 @@ import React,{ useState } from 'react';
 import { StyleSheet, Text, TextInput, View,KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 import {styles,colors} from '../styles/authStyle.js';
 import base64 from 'react-native-base64';
+import { AuthContext } from '../context.js';
 
 function Login({navigation}){
     const [isUserNameHighlighted, setIsUserNameHighlighted] = useState(false)
@@ -13,14 +14,13 @@ function Login({navigation}){
     const pressHandler = () => {
         navigation.navigate('Signup');
     }
+    const {signIn} = React.useContext(AuthContext)
 
     const handleSignIn = () => {
         const requestOptions = {
             method: 'GET',
             headers: { 'Accept': 'application/json' ,
             'Authorization': 'Basic '+ base64.encode(userName+':'+password)},
-            
-            
         };
         fetch("http://192.168.1.4:8080/auth/login",requestOptions).then(response => {
             const statusCode = response.status;
@@ -29,8 +29,8 @@ function Login({navigation}){
           })
           .then(([res, data]) => {
             if(res == 200){
-                alert(data.token)
-                // navigation.push("Home")
+                // alert(data.token)
+                signIn(data.token)
             }
             else{
                 alert("Invalid username and password.")

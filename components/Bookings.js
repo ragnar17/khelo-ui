@@ -6,6 +6,7 @@ function Bookings({navigation}){
 
     return (
     <View>
+        
         <Text>Bookings Screen</Text>
     </View> )
         
