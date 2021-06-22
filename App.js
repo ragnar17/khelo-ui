@@ -37,7 +37,8 @@ const ProfileStackScreen = () => (
   </ProfileStack.Navigator>
 )
 export default function App() {
-  const [usertoken,setUserToken] = React.useState("aa");
+  //set user token to something to bypass login page
+  const [usertoken,setUserToken] = React.useState(null);
 
   const authContext = React.useMemo(() =>{
     return {
